@@ -1,0 +1,11 @@
+# Ignore all but files for competitive programming
+
+*
+!.gitignore
+!*.cc
+!*.h
+!*.txt
+!*.cpp
+!*/
+!*.py
+!Makefile
