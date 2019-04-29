@@ -4,5 +4,9 @@ using namespace std;
 
 int main()
 {
-    
+    int tests;
+    cin >> tests;
+    for (int test = 0; test < tests; ++test) {
+        
+    }
 }

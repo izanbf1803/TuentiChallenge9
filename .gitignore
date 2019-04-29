@@ -9,3 +9,6 @@
 !*/
 !*.py
 !Makefile
+!*.php
+!*.conf
+!*.html
