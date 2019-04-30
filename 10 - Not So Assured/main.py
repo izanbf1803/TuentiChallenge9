@@ -37,14 +37,19 @@ for filename in files:
 	keys.append(key)
 	if user == "shanaehudson":
 		shanaehudson_key = key
-print(keys)
+
+fact = []
 
 for key in keys:
 	n1 = shanaehudson_key[0]
 	n2 = key[0]
 	g = gcd(n1, n2)
 	if g != 1 and g != n1 and g != n2:
-		print("\n---\n".join(map(repr,[n1, n2, g])), "\n\n\n")
+		fact.append(g)
+		# print("\n---\n".join(map(repr,[n1, n2, g])), "\n\n\n")
+
+p, q = fact
+
 
 # for i in range(len(keys)):
 # 	for j in range(i+1,len(keys)):
