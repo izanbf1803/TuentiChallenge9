@@ -1,0 +1,2 @@
+1
+200 ifrit 2 ice resist_wind
