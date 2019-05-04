@@ -1,2 +1,2 @@
 all:
-	g++ main.cc -std=gnu++11 -O2 -o solver.exe
+	g++ main.cc -std=gnu++11 -O3 -o solver.exe
