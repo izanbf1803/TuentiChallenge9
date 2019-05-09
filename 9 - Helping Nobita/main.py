@@ -33,7 +33,6 @@ for dkey in D:
         K[M[mkey]*D[dkey]] = dkey+mkey
 K[10000] = "一万" # special case
 
-
 def kanji_decode(s):
     if len(s) == 0:
         return None
@@ -80,7 +79,6 @@ def kanji_encode(n):
 
 def backtrack(v, i, ans):
     if i == 2:
-        # fout.write(' '.join([repr(i), repr(ans)])+"\n")
         x = ans[0]*ans[1]
         if x >= 1 and x <= 99999 and sorted(kanji_encode(x)) == sorted(v[2]):
             return ('*', ans[0], ans[1], x)
@@ -102,71 +100,17 @@ def backtrack(v, i, ans):
             if res != None: return res
     return None
 
-
-### TESTS: ###
-TESTK = [
-    "十一",
-    "四十八",
-    "百五十一",
-    "三百二",
-    "四百六十九",
-    "二千二十五",
-    "千百十",
-    "二千三百四十五",
-    "一万百十四",
-    "五万四千七百三十二",
-]
-TESTN = [
-    11,
-    48,
-    151,
-    302,
-    469,
-    2025,
-    1110,
-    2345,
-    10114,
-    54732,
-]
-assert len(TESTK) == len(TESTN)
-for i in range(len(TESTK)):
-    assert kanji_encode(TESTN[i]) == TESTK[i]
-    assert kanji_decode(TESTK[i]) == TESTN[i]
-for i in range(1, 99999+1):
-    if kanji_decode(kanji_encode(i)) != i:
-        print (i)
-        assert False 
-### END TESTS ###
-
 n = int(fin.readline())
 for test in range(n):
     line = fin.readline().replace(" ","").replace("\n","").replace("\r","")
     a, bc = line.split("OPERATOR")
     b, c = bc.split("=")
-
-    ################
-    # s = {}
-    # for x in itertools.permutations(b):
-    #     x = ''.join(x)
-    #     if kanji_decode(x) != None:
-    #         fout.write(x+" "+repr(kanji_decode(x))+"\n")
-    #         s[kanji_decode(x)] = 1
-    # for e in s:
-    #     print(e)
-    # print(len(s))
-    ################
-
     sol = backtrack([a, b, c], 0, [-1, -1, -1])
     print(sol)
     if sol == None:
         fout.write(f"Case #{test+1}: ERR\n\r")
     else:
         fout.write(f"Case #{test+1}: {sol[1]} {sol[0]} {sol[2]} = {sol[3]}\n")
-        # fout.write(f"Case #{test+1}: {kanji_encode(sol[1])} {sol[0]} {kanji_encode(sol[2])} = {kanji_encode(sol[3])}\n")
+        
 fin.close()
 fout.close()
-
-# kanji = "五万四千七百三十二"
-# n = 10114
-# fout.write(' '.join([ repr(kanji), repr(kanji_decode(kanji)) ])+"\n")
-# fout.write(' '.join([ repr(n), repr(kanji_encode(n)) ]) +"\n")

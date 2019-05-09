@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define D(x) cerr << #x << " = " << (x) << ", "
 
 typedef long double Real;
 typedef tuple<int,int,int64_t,int> State;
@@ -120,7 +119,6 @@ int main()
         m[M].u_ = 0;
 
         int ans = solve(0, M, R, C);
-        // D(ans) << endl;
 
         cout << "Case #" << test+1 << ": ";
 

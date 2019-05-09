@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define D(x) cout << #x << " = " << x << ", "
 
 int n; // number of people
 vector<vector<int>> adj;

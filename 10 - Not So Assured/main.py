@@ -55,13 +55,12 @@ for filename in files:
 	file.close()
 fact = []
 
-for key in keys:
+for key in keys: # factorize user key by computing gcd with all other keys
 	n1 = user_key[0]
 	n2 = key[0]
 	g = gcd(n1, n2)
 	if g != 1 and g != n1 and g != n2:
 		fact.append(g)
-		# print("\n---\n".join(map(repr,[n1, n2, g])), "\n\n\n")
 
 n = user_key[0]
 e = user_key[1]

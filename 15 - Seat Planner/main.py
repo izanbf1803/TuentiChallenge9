@@ -1,3 +1,5 @@
+# This scripts deals with the TCP server and calls the main.exe (compiled from main.cc) to solve the problem.
+
 import socket, sys, subprocess, time
 
 DEBUG_SOCK = False
@@ -21,14 +23,9 @@ def solve_test(s, test):
             raise Exception(lines[0])
         solver_input = ' '.join(lines)
         result = subprocess.run(["solver.exe", solver_input], stdout=subprocess.PIPE)
-        # print("SOLVER_INPUT:", solver_input)
         sol = result.stdout.decode()
-        # print(f"solver.exe RESULT:\n---\n{sol}---\n")
-        # TODO: call C++ solver
         for line in sol.splitlines():
             sock_send(s, line+"\n")
-        # for i in range(0, 8):
-        #     sock_send(s, ','.join(str(8*i+j) for j in range(1, 9))+"\n")
     except Exception as e:
         print(f"ERROR on test #{test-1} => {e}")
         print("LINES:", lines)

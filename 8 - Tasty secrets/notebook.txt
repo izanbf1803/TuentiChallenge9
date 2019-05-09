@@ -1,0 +1,37 @@
+Obtain the ultimate dish!
+
+
+auth cookie (post-login): 0c82c312c766e23720b76cd1255aa5ae
+md5 of null string for user: d41d8cd98f00b204e9800998ecf8427e
+
+
+document.cookie
+"auth=0c82c312c766e23720b76cd1255aa5ae"
+
+
+function create_auth_cookie($user)
+{
+    $authKey = get_auth_key();
+    if (!$authKey) {
+        return false;
+    }
+    $userMd5 = md5($user, true);
+
+    $result = '';
+    for ($i = 0; $i < strlen($userMd5); $i++) {
+        $result .= bin2hex(chr((ord($authKey[$i]) + ord($userMd5[$i])) % 256));
+    }
+    return $result;
+}
+
+
+auth key:
+38653739386630333737633939626330 b'8e798f0377c99bc0'
+
+
+user: a
+auth: 4426acf2f857e6db68fafc1ba2d98991
+
+
+user: admin
+auth: 59886662b2bdd5da7ac0ad4783e282f3

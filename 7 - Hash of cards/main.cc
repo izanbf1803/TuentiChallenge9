@@ -33,7 +33,7 @@ vector<byte> k_sum(int k, byte v)
         if (v >= 48 and v <= 122) return {v};
     }
     else {
-        for (byte x = 48; x <= 122; ++x) { // lexicographically smallest solution
+        for (byte x = 48; x <= 122; ++x) { // lexicographically smallest solution if we iterate this way
             vector<byte> sol = k_sum(k-1, v-x);
             if (not sol.empty()) {
                 sol.push_back(x);
@@ -46,15 +46,6 @@ vector<byte> k_sum(int k, byte v)
 
 int main()
 {
-    vector<byte> minv(256); // modular inverse table
-    for (int i = 0; i < 256; ++i) {
-        for (int j = 0; j < 256; ++j) {
-            if (i*j%256 == 1) {
-                minv[i] = j;
-                break;
-            }
-        }
-    }
     int tests;
     cin >> tests;
     for (int test = 0; test < tests; ++test) {
@@ -93,30 +84,34 @@ int main()
             }
         }
 
+
         string payload = "";
-        for (int len = 16; len <= 80; ++len) {
-            Hash h1 = notSoComplexHash(text1);
-            Hash h2 = notSoComplexHash(text2, text1.size()+len);
-            Hash h3 = notSoComplexHash(otext);
-            Hash h4 =  (h3 - h1 - h2); // expected hash value for payload (with shfit offset)
-            string s = string(len, '*');
-            bool solved = true;
-            for (int i = 0; i < 16; ++i) { // solve all indices 16k+i independently
-                int j = (text1.size()+i)%16;
-                int k = (len-1-i)/16+1;
-                vector<byte> sol = k_sum(k, h4[j]);
-                if (sol.empty()) {
-                    solved = false;
+
+        if (notSoComplexHash(otext) != notSoComplexHash(text1+payload+text2)) { // only if empty payload isn't valid
+            for (int len = 16; len <= 64; ++len) {
+                Hash h1 = notSoComplexHash(text1);
+                Hash h2 = notSoComplexHash(text2, text1.size()+len);
+                Hash h3 = notSoComplexHash(otext);
+                Hash h4 =  h3 - h1 - h2; // expected hash value for payload (with shfit offset)
+                string s = string(len, '*');
+                bool solved = true;
+                for (int i = 0; i < 16; ++i) { // solve all indices 16k+i independently
+                    int j = (text1.size()+i)%16;
+                    int k = (len-1-i)/16+1;
+                    vector<byte> sol = k_sum(k, h4[j]);
+                    if (sol.empty()) {
+                        solved = false;
+                        break;
+                    }
+                    sort(sol.begin(), sol.end()); // lexicographically smallest solution
+                    for (int j = 0; j < k; ++j) { // merge solutions
+                        s[i+16*j] = sol[j];
+                    }
+                }
+                if (solved) {
+                    payload = s;
                     break;
                 }
-                sort(sol.begin(), sol.end()); // lexicographically smallest solution
-                for (int j = 0; j < k; ++j) { // merge solutions
-                    s[i+16*j] = sol[j];
-                }
-            }
-            if (solved) {
-                payload = s;
-                break;
             }
         }
 
